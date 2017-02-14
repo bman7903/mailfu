@@ -1,0 +1,71 @@
+# -*- coding: utf-8 -*-
+from wsgiref.util import setup_testing_defaults
+from wsgiref.simple_server import make_server
+from re import sub
+from base64 import b64decode
+
+from ecv import zim
+
+import cgi
+
+
+def ppst( post ):
+  for e in post:
+     e  = str( e )
+     le = len( e )
+     if le > 45:
+        e = str( sub( ' ', '+', e ) )
+        e = str( '%s=' % e )
+        return e
+  return
+#  post = str( post )
+#  post = str( post.split(', ')[-1] )
+#  post = str( post.split(')')[0] ) 
+#  post = str( sub("'", "", post ) )
+#  return post
+
+
+def smack( environ, start_response ):
+  setup_testing_defaults(environ)
+  
+  status         = '200 OK'
+  headers        = [('Server', 'Apache'),('Content-type', 'text/html')]
+ 
+  post_env = environ.copy()
+  post_env['QUERY_STRING'] = ''
+  post = cgi.FieldStorage(
+    fp=environ['wsgi.input'],
+    environ=post_env,
+    keep_blank_values=True
+  )
+
+#  pst = str( post
+  pst = str( ppst( post ) )
+  print( pst )
+#  dec = str( zim( 'd', pst ) )
+#  dec = str( b64decode( dec ) )
+
+
+  headers        = [ ('Server', 'Apache2'),('Content-type', 'text/plain' ) ]
+  start_response( status, headers )
+  return status
+
+
+
+def phew():
+  try:
+     from sys import argv
+     port        = int( argv[1] )
+  except:
+     port        = 9001
+
+  httpd          = make_server('127.0.0.1', port, smack )
+ 
+
+  print( "Accepting on port %d" % port )
+  httpd.serve_forever()
+  con.close()
+
+phew()
+
+

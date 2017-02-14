@@ -1,0 +1,6 @@
+sendmail sad@sda.cc
+From: sdaf@sad.cs
+Subject: subject
+hello there how are you today
+.
+
